@@ -10,13 +10,27 @@ function calculateJobMetrics() {
 
   // Get the jobs from Scoreboard
   var lastRowSB = scoreboardJobs.getLastRow();
-  var jobsInScoreboard = scoreboardJobs.getRange(2, 2, lastRowSB - 1, 1).getValues().flat().map(job => job.toLowerCase());
+  var jobsInScoreboard = scoreboardJobs
+    .getRange(2, 2, lastRowSB - 1, 1)
+    .getValues()
+    .flat()
+    .map((job) => job.toLowerCase());
 
   // Get the jobs, statuses, and scheduled dates from To Do
   var lastRowTD = toDo.getLastRow();
-  var jobsInToDo = toDo.getRange(2, 1, lastRowTD - 1, 1).getValues().flat().map(job => job.toLowerCase());
-  var statuses = toDo.getRange(2, 3, lastRowTD - 1, 1).getValues().flat();
-  var scheduledDates = toDo.getRange(2, 8, lastRowTD - 1, 1).getValues().flat();
+  var jobsInToDo = toDo
+    .getRange(2, 1, lastRowTD - 1, 1)
+    .getValues()
+    .flat()
+    .map((job) => job.toLowerCase());
+  var statuses = toDo
+    .getRange(2, 3, lastRowTD - 1, 1)
+    .getValues()
+    .flat();
+  var scheduledDates = toDo
+    .getRange(2, 8, lastRowTD - 1, 1)
+    .getValues()
+    .flat();
 
   // Initialize arrays to store the results
   var countsNegativeDays = [];
@@ -26,8 +40,9 @@ function calculateJobMetrics() {
   var percentagesOver90 = [];
 
   // Process each job in Scoreboard
-  jobsInScoreboard.forEach(function(job) {
-    if (job) { // Only process if job is not empty
+  jobsInScoreboard.forEach(function (job) {
+    if (job) {
+      // Only process if job is not empty
       var countNegativeDays = 0;
       var count0To30 = 0;
       var count30To60 = 0;
@@ -37,7 +52,7 @@ function calculateJobMetrics() {
       var totalTasks = 0;
 
       // Find all matching jobs in To Do
-      jobsInToDo.forEach(function(toDoJob, index) {
+      jobsInToDo.forEach(function (toDoJob, index) {
         if (toDoJob === job) {
           var status = statuses[index];
           var scheduledDate = new Date(scheduledDates[index]);
@@ -62,10 +77,10 @@ function calculateJobMetrics() {
       });
 
       // Calculate percentages based on total tasks
-      var percentage0To30 = totalTasks > 0 ? (count0To30 / totalTasks) : 0;
-      var percentage30To60 = totalTasks > 0 ? (count30To60 / totalTasks) : 0;
-      var percentage60To90 = totalTasks > 0 ? (count60To90 / totalTasks) : 0;
-      var percentageOver90 = totalTasks > 0 ? (countOver90 / totalTasks) : 0;
+      var percentage0To30 = totalTasks > 0 ? count0To30 / totalTasks : 0;
+      var percentage30To60 = totalTasks > 0 ? count30To60 / totalTasks : 0;
+      var percentage60To90 = totalTasks > 0 ? count60To90 / totalTasks : 0;
+      var percentageOver90 = totalTasks > 0 ? countOver90 / totalTasks : 0;
 
       // Store the results
       countsNegativeDays.push([countNegativeDays]);
@@ -84,19 +99,42 @@ function calculateJobMetrics() {
   });
 
   // Output the results to Scoreboard
-  scoreboardJobs.getRange(2, 24, countsNegativeDays.length, 1).setValues(countsNegativeDays); // Column X
-  scoreboardJobs.getRange(2, 23, percentages0To30.length, 1).setValues(percentages0To30); // Column W
-  scoreboardJobs.getRange(2, 22, percentages30To60.length, 1).setValues(percentages30To60); // Column V
-  scoreboardJobs.getRange(2, 21, percentages60To90.length, 1).setValues(percentages60To90); // Column U
-  scoreboardJobs.getRange(2, 20, percentagesOver90.length, 1).setValues(percentagesOver90); // Column T
+  scoreboardJobs
+    .getRange(2, 24, countsNegativeDays.length, 1)
+    .setValues(countsNegativeDays); // Column X
+  scoreboardJobs
+    .getRange(2, 23, percentages0To30.length, 1)
+    .setValues(percentages0To30); // Column W
+  scoreboardJobs
+    .getRange(2, 22, percentages30To60.length, 1)
+    .setValues(percentages30To60); // Column V
+  scoreboardJobs
+    .getRange(2, 21, percentages60To90.length, 1)
+    .setValues(percentages60To90); // Column U
+  scoreboardJobs
+    .getRange(2, 20, percentagesOver90.length, 1)
+    .setValues(percentagesOver90); // Column T
 
   // Set number format to percentage / count for the relevant columns
-  scoreboardJobs.getRange(2, 24, countsNegativeDays.length, 1).setNumberFormat("0"); // Column X
-  scoreboardJobs.getRange(2, 23, percentages0To30.length, 1).setNumberFormat("0%"); // Column W
-  scoreboardJobs.getRange(2, 22, percentages30To60.length, 1).setNumberFormat("0%"); // Column V
-  scoreboardJobs.getRange(2, 21, percentages60To90.length, 1).setNumberFormat("0%"); // Column U
-  scoreboardJobs.getRange(2, 20, percentagesOver90.length, 1).setNumberFormat("0%"); // Column T
+  scoreboardJobs
+    .getRange(2, 24, countsNegativeDays.length, 1)
+    .setNumberFormat("0"); // Column X
+  scoreboardJobs
+    .getRange(2, 23, percentages0To30.length, 1)
+    .setNumberFormat("0%"); // Column W
+  scoreboardJobs
+    .getRange(2, 22, percentages30To60.length, 1)
+    .setNumberFormat("0%"); // Column V
+  scoreboardJobs
+    .getRange(2, 21, percentages60To90.length, 1)
+    .setNumberFormat("0%"); // Column U
+  scoreboardJobs
+    .getRange(2, 20, percentagesOver90.length, 1)
+    .setNumberFormat("0%"); // Column T
 
   // Center-align the outputs
-  scoreboardJobs.getRange(2, 20, jobsInScoreboard.length, 5).setHorizontalAlignment("center").setVerticalAlignment("middle"); // Columns T to X
+  scoreboardJobs
+    .getRange(2, 20, jobsInScoreboard.length, 5)
+    .setHorizontalAlignment("center")
+    .setVerticalAlignment("middle"); // Columns T to X
 }
